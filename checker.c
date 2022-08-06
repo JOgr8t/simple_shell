@@ -15,4 +15,5 @@ int checker(char **cmd, char *buf)
                 return (1);
         }
         return (0);
+
 }
