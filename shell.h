@@ -2,160 +2,112 @@
 #define _SHELL_H_
 #define UNUSED(x) (void)(x)
 
+/**###### environ var ######*/
+
+extern char **environ;
+
+/**##### MACROS ######*/
+
+#define BUFSIZE 1024
+#define DELIM " \t\r\n\a"
+#define PRINTER(c) (write(STDOUT_FILENO, c, _strlen(c)))
+
+/**###### LIBS USED ######*/
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 #include <sys/types.h>
-#include <sys/stat.h>
+#include <string.h>
 #include <sys/wait.h>
-#include <limits.h>
+#include <stdlib.h>
 #include <signal.h>
+#include <sys/stat.h>
 #include <fcntl.h>
-
-/**
- * struct history - An structure for each command readed
- * @str: string
- * @counter: number of imputs
- * @next: Next element
- */
-
-typedef struct history
-{
-	char *str;
-	int counter;
-	struct history *next;
-
-} history_t;
+#include <errno.h>
+#include <linux/limits.h>
 
 
-/**
- * struct variables - variables
- * @array_tokens: array of tokens(arguments)
-  * @buffer: buffer of command
-  * @status: to handle exit status
-  * @argv: gets arguments at opening of shell
-  * @counter: counts commands entered
-  * @env: has enviroment
-  * @commands: have commands.
-  * @history: structure
-  * @invert: structure
- */
-typedef struct variables
-{
-	char **array_tokens;
-	char *buffer;
-	int status;
-	char **argv;
-	int counter;
-	char **env;
-	char **commands;
-	history_t *history;
-	history_t *invert;
 
-} vars_t;
 
-/**
- * struct builtins - struct for the builtin functions
- * @name: name of builtin command
- * @f: function for corresponding builtin
- */
-typedef struct builtins
-{
-	char *name;
-	void (*f)(vars_t *);
-} builtins_t;
 
-/******Some String operations and manipulation******/
-char *_strdup(char *strtodup);
-int _strcmpr(char *strcmp1, char *strcmp2);
-char *_strcat(char *strc1, char *strc2);
-ssize_t _puts(char *str);
-int _strlen(char *str);
-void print_str(char *str, int new_line);
-int _write_char(char c);
-int print_number(int n);
+/**###### STRING FUNCTION ######*/
 
-/*** BUILTINGS PROTOTYPES ****/
-void (*check_for_builtins(vars_t *vars))(vars_t *vars);
-void new_exit(vars_t *vars);
-void _env(vars_t *vars);
-void new_setenv(vars_t *vars);
-void new_unsetenv(vars_t *vars);
-void new_help(vars_t *vars);
-void new_cd(vars_t *vars);
+char *_strtok(char *str, const char *tok);
+unsigned int check_delim(char c, const char *str);
+char *_strncpy(char *dest, char *src, int n);
+int _strlen(char *s);
+int _putchar(char c);
+int _atoi(char *s);
+void _puts(char *str);
+int _strcmp(char *s1, char *s2);
+int _isalpha(int c);
+void array_rev(char *arr, int len);
+int intlen(int num);
+char *_itoa(unsigned int n);
+char *_strcat(char *dest, char *src);
+char *_strcpy(char *dest, char *src);
+char *_strchr(char *s, char c);
+int _strncmp(const char *s1, const char *s2, size_t n);
+char *_strdup(char *str);
 
-/** functions related to tokenizer **/
-char **tokenizer(char *buffer, char *delimiter);
-unsigned int check_if_match(char c, const char *str);
-char **_realloc(char **ptr, size_t *size);
-char *new_strtok(char *str, const char *delim);
+/**###### MEMORIE  MANGMENT ####*/
 
-/** second tokenizer**/
-char **tokenize(int token_count, char *line, const char *delimiter);
-char **token_interface(char *line, const char *delimiter, int token_count);
-int count_token(char *line, const char *delimiter);
-
-/** functions related ask external shell, ask the path**/
-void check_for_path(vars_t *vars);
-
-/** function to handle error messages, used to help exit function*/
-void _puts_error(char *str);
-void prints_error_msg(vars_t *vars, char *msg);
-char *integer_converter(unsigned int count);
-
-/** function to help exit builting*/
-int _atoi(char *str);
-
-/** functions de help env builting*/
-/*this to get enviroment*/
-char **make_enviroment(char **env);
 void free_env(char **env);
+void *fill_an_array(void *a, int el, unsigned int len);
+char *_memcpy(char *dest, char *src, unsigned int n);
+void *_calloc(unsigned int size);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+void free_all(char **input, char *line);
 
-/**New_help functions**/
-void new_help_exit(vars_t *vars);
-void new_help_help(vars_t *vars);
-void new_help_cd(vars_t *vars);
-void new_help_env(vars_t *vars);
-void new_help_history(vars_t *vars);
-void new_help_unalias(vars_t *vars);
-void new_help_unset(vars_t *vars);
-void new_help_unsetenv(vars_t *vars);
-void new_help_setenv(vars_t *vars);
-void new_help_alias(vars_t *vars);
-void new_help_else(vars_t *vars);
+/**###### INPUT Function ######*/
 
-/** FUNCTIONS FOR SETENV AND UNSETENV**/
-void new_setenv(vars_t *vars);
-void add_key(vars_t *vars);
-char *add_value(char *key, char *value);
-char **find_key(char **env, char *key);
-void setenv_cd(char **args, vars_t *vars);
-void chdir_to_env(vars_t *vars, char *str);
+void prompt(void);
+void signal_to_handel(int sig);
+char *_getline(void);
 
-/** ask the path **/
-void fork_child(vars_t vars);
-char *path_finder(vars_t vars, char *command);
-int find_env_index(vars_t vars, char *str);
-char **tokenize_path(vars_t vars, int index, char *str);
-char *search_directories(char **path_tokens, char *command);
-char *build_path(char *directory, char *command);
+/** ###### Command parser and extractor ###*/
 
-/** More handle error messages**/
-void error_printing(char *av, int count, char *command);
-void exec_error(char *av, int count, char *tmp_command);
-void simple_error(void);
-void print_cd_1(vars_t *vars);
-void print_cd_2(vars_t *vars);
+int path_cmd(char **line);
+char *_getenv(char *name);
+char **parse_cmd(char *cmd);
+int handle_builtin(char **cmd, int er);
+void read_file(char *filename, char **argv);
+char *build(char *token, char *value);
+int check_builtin(char **cmd);
+void creat_envi(char **envi);
+int check_cmd(char **tokens, char *line, int count, char **argv);
+void treat_file(char *line, int counter, FILE *fd, char **argv);
+void exit_bul_for_file(char **cmd, char *line, FILE *fd);
 
-/**history build function**/
-void new_history(vars_t *vars);
-void *add_nodeint(history_t **head, char *str);
-void free_listint(history_t *head);
-ssize_t _puts3(char *str);
-void print_message(char *str);
-/** handles signals**/
+/** ####BUL FUNC #####*/
 
-void end_of_file(char *buffer);
-unsigned int sig_flag;
-#endif /* _SHELL_H_ */
+void hashtag_handle(char *buff);
+int history(char *input);
+int history_dis(char **cmd, int er);
+int dis_env(char **cmd, int er);
+int change_dir(char **cmd, int er);
+int display_help(char **cmd, int er);
+int echo_bul(char **cmd, int er);
+void  exit_bul(char **cmd, char *input, char **argv, int c);
+int print_echo(char **cmd);
+
+/** ####error handle and Printer ####*/
+void print_number(unsigned int n);
+void print_number_in(int n);
+void print_error(char *line, int c, char **argv);
+void _prerror(char **argv, int c, char **cmd);
+
+
+/**
+ * struct bulltin - contain bultin to handle and function to excute
+ * @command:pointer to char
+ * @fun:fun to excute when bultin true
+ */
+
+typedef struct  bulltin
+{
+	char *command;
+	int (*fun)(char **line, int er);
+} bul_t;
+
+#endif
