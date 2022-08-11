@@ -1,75 +1,110 @@
 #include "shell.h"
-
 /**
- * _strlen - returns the length of a string
- * @s: the string whose length to check
- *
- * Return: integer length of string
+ * _strcpy - Copie Source To Destination Char
+ * @dest:Destination
+ * @src:Source
+ * Return: Copie Of Char *
  */
-int _strlen(char *s)
+char *_strcpy(char *dest, char *src)
 {
-	int i = 0;
+int i;
 
-	if (!s)
-		return (0);
-
-	while (*s++)
-		i++;
-	return (i);
-}
-
-/**
- * _strcmp - performs lexicogarphic comparison of two strangs.
- * @s1: the first strang
- * @s2: the second strang
- *
- * Return: negative if s1 < s2, positive if s1 > s2, zero if s1 == s2
- */
-int _strcmp(char *s1, char *s2)
-{
-	while (*s1 && *s2)
+i = 0;
+	while (src[i])
 	{
-		if (*s1 != *s2)
-			return (*s1 - *s2);
-		s1++;
-		s2++;
+		dest[i] = src[i];
+		i++;
 	}
-	if (*s1 == *s2)
-		return (0);
-	else
-		return (*s1 < *s2 ? -1 : 1);
+dest[i] = '\0';
+return (dest);
 }
-
 /**
- * starts_with - checks if needle starts with haystack
- * @haystack: string to search
- * @needle: the substring to find
- *
- * Return: address of next char of haystack or NULL
- */
-char *starts_with(const char *haystack, const char *needle)
-{
-	while (*needle)
-		if (*needle++ != *haystack++)
-			return (NULL);
-	return ((char *)haystack);
-}
-
-/**
- * _strcat - concatenates two strings
- * @dest: the destination buffer
- * @src: the source buffer
- *
- * Return: pointer to destination buffer
+ * _strcat - Concat Two String
+ * @dest:First String
+ * @src:Second String
+ * Return:First String + Second String Char *
  */
 char *_strcat(char *dest, char *src)
 {
-	char *ret = dest;
+	char *s = dest;
 
-	while (*dest)
+	while (*dest != '\0')
+	{
 		dest++;
-	while (*src)
-		*dest++ = *src++;
-	*dest = *src;
-	return (ret);
+	}
+
+	while (*src != '\0')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+	return (s);
+}
+/**
+ * _strchr - Locate Charactere In String
+ * @s:String Search In
+ * @c:Char To Search For
+ * Return: Pointer To Char*
+ */
+char *_strchr(char *s, char c)
+{
+
+	do		{
+
+		if (*s == c)
+			{
+			break;
+			}
+		}	while (*s++);
+
+return (s);
+}
+/**
+ * _strncmp - Compare Amount (n) Of Characters Of Two Strings.
+ * @s1: A String.
+ * @s2: A String.
+ * @n: Amount Of Characters To Compare.
+ *
+ * Return: 1 If The Strings Don't Match Otherwise 0
+ */
+int _strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t i;
+
+	if (s1 == NULL)
+		return (-1);
+	for (i = 0; i < n && s2[i]; i++)
+	{
+		if (s1[i] != s2[i])
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
+/**
+ * _strdup - Duplicate A String
+ * @str:String
+ * Return: Duplicate String Failed Null
+ */
+char *_strdup(char *str)
+{
+	size_t len, i;
+	char *str2;
+
+	len = _strlen(str);
+	str2 = malloc(sizeof(char) * (len + 1));
+	if (!str2)
+	{
+		return (NULL);
+	}
+
+	for (i = 0; i <= len; i++)
+	{
+		str2[i] = str[i];
+	}
+
+	return (str2);
 }
