@@ -1,96 +1,74 @@
 #include "shell.h"
-/**
- * _putchar - writes the character c to stdout
- * @c: The character to print
- *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
- */
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-/**
- * _strncpy - copie a string
- * @dest:char
- *  @src:char
- * @n:int
- * Return:char
- */
 
+/**
+ **_strncpy - copies a string
+ *@dest: the destination string to be copied to
+ *@src: the source string
+ *@n: the amount of characters to be copied
+ *Return: the concatenated string
+ */
 char *_strncpy(char *dest, char *src, int n)
 {
-int i;
+	int i, j;
+	char *s = dest;
 
-i = 0;
-	while (i < n && *(src + i))
+	i = 0;
+	while (src[i] != '\0' && i < n - 1)
 	{
-	*(dest + i) = *(src + i);
-	i++;
-	}
-	while (i < n)
-	{
-	*(dest + i) = '\0';
-	i++;
-	}
-	return (dest);
-}
-
-/**
- * _strlen - lenght of string
- * @s:char
- * Return:int
- */
-
-int _strlen(char *s)
-{
-	int i;
-
-		for (i = 0; s[i] != '\0'; i++)
-		{
-			continue;
-		}
-return (i);
-}
-
-/**
- * _atoi - convert to a int
- * @s:string
- * Return:int
- */
-int _atoi(char *s)
-{
-int i, j, n, x;
-
-	i = n = 0;
-	x = 1;
-	while ((s[i] < '0' || s[i] > '9') && (s[i] != '\0'))
-	{
-		if (s[i] == '-')
-			x *= -1;
+		dest[i] = src[i];
 		i++;
 	}
-	j = i;
-	while ((s[j] >= '0') && (s[j] <= '9'))
+	if (i < n)
 	{
-		n = (n * 10) + x * ((s[j]) - '0');
+		j = i;
+		while (j < n)
+		{
+			dest[j] = '\0';
+			j++;
+		}
+	}
+	return (s);
+}
+
+/**
+ **_strncat - concatenates two strings
+ *@dest: the first string
+ *@src: the second string
+ *@n: the amount of bytes to be maximally used
+ *Return: the concatenated string
+ */
+char *_strncat(char *dest, char *src, int n)
+{
+	int i, j;
+	char *s = dest;
+
+	i = 0;
+	j = 0;
+	while (dest[i] != '\0')
+		i++;
+	while (src[j] != '\0' && j < n)
+	{
+		dest[i] = src[j];
+		i++;
 		j++;
 	}
-	return (n);
+	if (j < n)
+		dest[i] = '\0';
+	return (s);
 }
-/**
- * _puts - print a string
- * @str:pointer char
- * return:void
- */
-void _puts(char *str)
-{
-	int i;
 
-	for (i = 0; str[i] != '\0'; i++)
-	{
-		_putchar(str[i]);
-	}
-_putchar('\n');
-return;
+/**
+ **_strchr - locates a character in a string
+ *@s: the string to be parsed
+ *@c: the character to look for
+ *Return: (s) a pointer to the memory area s
+ */
+char *_strchr(char *s, char c)
+{
+	do {
+		if (*s == c)
+			return (s);
+	} while (*s++ != '\0');
+
+	return (NULL);
 }
